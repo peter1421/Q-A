@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, session
-import database
+
+from service.QuestionService import getQuestion
 application = Flask(__name__, static_folder='static', static_url_path='')
 
 
@@ -23,11 +24,12 @@ def products():
 def accounts():
     return render_template("accounts.html")
 
+@application.route("/api/question")
+def getAllQuestion():
+    return getQuestion()
+    # return redirect(url_for('index'))
 
 # run the app.
 if __name__ == "__main__":
     application.debug = True
-    t = database.DataBase()
-    a = t.show('SELECT * FROM sys.Question;')
-    print(a)
     application.run(port=5500)
