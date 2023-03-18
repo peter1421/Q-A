@@ -4,3 +4,8 @@
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 config.ini
+*.pyc
+*.pyo
+.pyd
+__pycache__
+.pytest_cache

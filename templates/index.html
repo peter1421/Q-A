@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8">
@@ -56,8 +56,9 @@
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-dark">
                                         <li><a class="dropdown-item" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">回答問題</a></li>
-                                        <li><a class="dropdown-item" href="#">功能2</a></li>
+                                                data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">回答問題</a>
+                                        </li>
+                                        <!-- <li><a class="dropdown-item" href="#" id="getAllQuestion">輸出API</a></li> -->
                                         <li><a class="dropdown-item" href="#">功能3</a></li>
                                     </ul>
                                 </li>
@@ -99,8 +100,9 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close">X</button>
                         </div>
-                        <div class="modal-body">
-                            <form>
+                        <div class="modal-body" id="#dataList2">
+                            
+                            <!-- <form>
                                 <div class="mb-3">
                                     <label for="recipient-name" class="col-form-label">Recipient:</label>
                                     <input type="text" class="form-control" id="recipient-name">
@@ -109,11 +111,11 @@
                                     <label for="message-text" class="col-form-label">Message:</label>
                                     <textarea class="form-control" id="message-text"></textarea>
                                 </div>
-                            </form>
+                            </form> -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Send message</button>
+                            <button type="button" class="btn btn-primary" id="getAllQuestion">Send message</button>
                         </div>
                     </div>
                 </div>
@@ -176,6 +178,71 @@
             });
         })
     </script>
+    <script>
+        (function () {
+            var httpRequest;
+            var api = '0';
+
+            function makeRequest(url) {
+                httpRequest = new XMLHttpRequest();
+                if (!httpRequest) {
+                    alert('Giving up :( Cannot create an XMLHTTP instance');
+                    return false;
+                }
+                httpRequest.onreadystatechange = alertContents;
+                httpRequest.open('GET', url, true);
+                httpRequest.send();
+                xhr.onload = function () {
+                    var dataset = JSON.parse(this.responseText)
+                    // alert(dataset)
+                }
+            }
+
+            function alertContents() {
+                if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                    if (httpRequest.status === 200) {
+                        alert(httpRequest.responseText);
+                    } else {
+                        alert('There was a problem with the request.');
+                    }
+                }
+            }
+            document.getElementById("getAllQuestion").addEventListener('click', function () {
+                alert('Get')
+                makeRequest('/api/question')
+                alert(api)
+                let newCardInfo =
+                    `
+                        <form>
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label" >ssssssssssss</label>
+                                <input type="text" class="form-control" id="recipient-name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="message-text" class="col-form-label">?????</label>
+                                <textarea class="form-control" id="message-text"></textarea>
+                            </div>
+                        </form>
+                    `
+                $('#dataList2').append(newCardInfo);
+
+            });
+        })();
+    </script>
 </body>
 
 </html>
+<!-- 
+
+<div class="modal-body">
+    <form>
+        <div class="mb-3">
+            <label for="recipient-name" class="col-form-label" >Recipient:</label>
+            <input type="text" class="form-control" id="recipient-name">
+        </div>
+        <div class="mb-3">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+        </div>
+    </form>
+</div> -->

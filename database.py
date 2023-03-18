@@ -29,12 +29,14 @@ class DataBase():
             self.db.rollback()
 
 # t = DataBase()
-config = configparser.ConfigParser()
-config.read('config.ini')
-dbhost = config.get('DataBase', 'host')
-dbuser = config.get('DataBase', 'user')
-dbpass = config.get('DataBase', 'pass')
-# dbhost = 'qa-web.c6vvbl5ahndg.us-east-2.rds.amazonaws.com'
-# dbuser = 'admin'
-# dbpass = 'fil12385ki'
-
+try:
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    dbhost = config.get('DataBase', 'host')
+    dbuser = config.get('DataBase', 'user')
+    dbpass = config.get('DataBase', 'pass')
+except:
+    # dbhost = 'qa-web.c6vvbl5ahndg.us-east-2.rds.amazonaws.com'
+    dbhost = '34.80.238.171'
+    dbuser = 'admin'
+    dbpass = 'fil12385ki'
