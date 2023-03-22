@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Products Page - Dashboard Template</title>
+    <title>Q&A Web</title>
     <!--
 
     Template 2108 Dashboard
@@ -46,7 +46,7 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="/api/question">getAllQuestion</a>
-                                        <a class="dropdown-item" href="#">API2</a>
+                                        <a class="dropdown-item" href="/api/temp">Temp</a>
                                         <a class="dropdown-item" href="#">API3</a>
                                     </div>
                                 </li>
@@ -55,7 +55,7 @@
                                         測試功能
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-dark">
-                                        <li><a class="dropdown-item" data-bs-toggle="modal"
+                                        <li><a class="dropdown-item" id="getAllQuestion" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">回答問題</a>
                                         </li>
                                         <!-- <li><a class="dropdown-item" href="#" id="getAllQuestion">輸出API</a></li> -->
@@ -89,33 +89,20 @@
                     </nav>
                 </div>
             </div>
-
-
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">問題</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close">X</button>
                         </div>
-                        <div class="modal-body" id="#dataList2">
-                            
-                            <!-- <form>
-                                <div class="mb-3">
-                                    <label for="recipient-name" class="col-form-label">Recipient:</label>
-                                    <input type="text" class="form-control" id="recipient-name">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="message-text" class="col-form-label">Message:</label>
-                                    <textarea class="form-control" id="message-text"></textarea>
-                                </div>
-                            </form> -->
+                        <div class="modal-body" id="questionShow">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="getAllQuestion">Send message</button>
+                            <button type="button" class="btn btn-primary">Send message</button>
                         </div>
                     </div>
                 </div>
@@ -126,33 +113,33 @@
                         <div class="row">
                             <div class="col-12 text-center">
                                 <i class="fas fa-3x fa-tachometer-alt tm-site-icon text-center"></i>
-                                <h2 class="tm-block-title mt-3">Login</h2>
+                                <h2 class="tm-block-title mt-3">我要發問題</h2>
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col-12">
-                                <form action="index.html" method="post" class="tm-login-form">
+                                <div class="tm-login-form">
                                     <div class="input-group">
                                         <label for="username"
-                                            class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Username</label>
-                                        <input name="username" type="text"
+                                            class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">問題</label>
+                                        <input name="content" type="text"
                                             class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7"
-                                            id="username" value="admin" required>
+                                            id="content" placeholder="請問你今天的內褲是甚麼顏色的?" required>
                                     </div>
                                     <div class="input-group mt-3">
                                         <label for="password"
-                                            class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Password</label>
-                                        <input name="password" type="password" class="form-control validate"
-                                            id="password" value="1234" required>
+                                            class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Email</label>
+                                        <input name="email" type="text" class="form-control validate" id="email"
+                                            placeholder="abcde@gmail.com" required>
                                     </div>
                                     <div class="input-group mt-3">
-                                        <button type="submit"
-                                            class="btn btn-primary d-inline-block mx-auto">Login</button>
+                                        <button type="submit" class="btn btn-primary d-inline-block mx-auto"
+                                            id="addQuestion">送出</button>
                                     </div>
                                     <div class="input-group mt-3">
-                                        <p><em>Just put a character to login.</em></p>
+                                        <p><em>問題被回答後會寄發到Email</em></p>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -180,69 +167,102 @@
     </script>
     <script>
         (function () {
-            var httpRequest;
-            var api = '0';
+            window.onload = function () {
+                // $('#exampleModal').modal('show')
+                // $('#getAllQuestion').trigger("click");
+            }
+            $("#getAllQuestion").click(getAllQuestion)
+            $("#addQuestion").click(addQuestion)
 
             function makeRequest(url) {
-                httpRequest = new XMLHttpRequest();
-                if (!httpRequest) {
-                    alert('Giving up :( Cannot create an XMLHTTP instance');
+                return new Promise((resolve, reject) => {
+                    var httpRequest = new XMLHttpRequest();
+                    if (!httpRequest) {
+                        alert('Giving up :( Cannot create an XMLHTTP instance');
+                        return false;
+                    }
+                    httpRequest.open('GET', url, true);
+                    httpRequest.send();
+                    httpRequest.onload = function () {
+                        if (alertContents(httpRequest)) {
+                            resolve(JSON.parse(httpRequest.responseText))
+                        } else {
+                            reject(new Error(httpRequest))
+                        }
+                    }
+                })
+            }
+
+            function post(url, request) {
+                return new Promise((resolve, reject) => {
+                    var httpRequest = new XMLHttpRequest();
+                    if (!httpRequest) {
+                        alert('Giving up :( Cannot create an XMLHTTP instance');
+                        return false;
+                    }
+                    console.log(JSON.stringify(request));
+                    httpRequest.open('post', url, true);
+                    httpRequest.setRequestHeader("Content-type", "application/json");
+                    httpRequest.send(JSON.stringify(request));
+                    httpRequest.onload = function () {
+                        if (alertContents(httpRequest)) {
+                            resolve(JSON.stringify(request));
+                        } else {
+                            reject(new Error(httpRequest))
+                        }
+                    }
+                })
+            }
+
+            function alertContents(httpRequest) {
+                if (httpRequest.status === 200) {
+                    return true;
+                } else {
+                    console.log('There was a problem with the request.');
                     return false;
-                }
-                httpRequest.onreadystatechange = alertContents;
-                httpRequest.open('GET', url, true);
-                httpRequest.send();
-                xhr.onload = function () {
-                    var dataset = JSON.parse(this.responseText)
-                    // alert(dataset)
                 }
             }
 
-            function alertContents() {
-                if (httpRequest.readyState === XMLHttpRequest.DONE) {
-                    if (httpRequest.status === 200) {
-                        alert(httpRequest.responseText);
-                    } else {
-                        alert('There was a problem with the request.');
-                    }
-                }
-            }
-            document.getElementById("getAllQuestion").addEventListener('click', function () {
-                alert('Get')
-                makeRequest('/api/question')
-                alert(api)
-                let newCardInfo =
-                    `
+            function getAllQuestion() {
+                makeRequest('/api/question').then((res) => {
+                        console.log(res);
+                        printResponse(res)
+                    })
+                    .catch((res) => {
+                        console.error(res)
+                    })
+
+                function printResponse(res) {
+                    $('#questionShow').empty();
+                    var index = Math.floor(Math.random() * res.length);
+                    let newCardInfo =
+                        `
                         <form>
                             <div class="mb-3">
-                                <label for="recipient-name" class="col-form-label" >ssssssssssss</label>
+                                <label for="recipient-name" class="col-form-label" > ${res[index].content}</label>
                                 <input type="text" class="form-control" id="recipient-name">
-                            </div>
-                            <div class="mb-3">
-                                <label for="message-text" class="col-form-label">?????</label>
-                                <textarea class="form-control" id="message-text"></textarea>
                             </div>
                         </form>
                     `
-                $('#dataList2').append(newCardInfo);
+                    $('#questionShow').append(newCardInfo);
+                }
 
-            });
+            }
+
+            function addQuestion() {
+                var question = {
+                    content: $("#content").val(),
+                    email: $("#email").val()
+                }
+                post('/api/addQuestion', question).then((res) => {
+                        alert(res + ' successfully!')
+                    })
+                    .catch((res) => {
+                        console.error(res)
+                    })
+            }
         })();
     </script>
 </body>
 
 </html>
-<!-- 
-
-<div class="modal-body">
-    <form>
-        <div class="mb-3">
-            <label for="recipient-name" class="col-form-label" >Recipient:</label>
-            <input type="text" class="form-control" id="recipient-name">
-        </div>
-        <div class="mb-3">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message-text"></textarea>
-        </div>
-    </form>
-</div> -->

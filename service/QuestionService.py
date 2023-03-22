@@ -13,3 +13,12 @@ def getQuestion():
         return api
     except:
         return []
+    
+def addQuestion(question,email):
+    try:
+        query=f"INSERT INTO `qa`.`question` (`content`, `mail`) VALUES ('{question}', '{email}');"
+        databaseHandler.execute(query)
+        return True
+    except:
+        return False
+

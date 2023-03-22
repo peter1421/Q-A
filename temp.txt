@@ -1,3 +1,4 @@
 cls
 python application.py
 gcloud run deploy --source .
+https://q-a-npi2jbkqlq-de.a.run.app
