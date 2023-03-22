@@ -10,6 +10,15 @@ def getQuestion():
         for item in databaseHandler.show(query):
             temp=Question(item[0],item[1],item[2],item[3])
             api.append(temp.toApi())
-        return api
+        return {"qestion": api}
     except:
-        return []
+        return 'ERROR'
+    
+def addQuestion(question,email):
+    try:
+        query=f"INSERT INTO `qa`.`question` (`content`, `mail`) VALUES ('{question}', '{email}');"
+        databaseHandler.execute(query)
+        return True
+    except:
+        return False
+

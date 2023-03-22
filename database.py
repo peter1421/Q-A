@@ -38,5 +38,5 @@ try:
 except:
     # dbhost = 'qa-web.c6vvbl5ahndg.us-east-2.rds.amazonaws.com'
     dbhost = '34.80.238.171'
-    dbuser = 'admin'
-    dbpass = 'fil12385ki'
+    dbuser='root'
+    dbpass='fil12385ki'
