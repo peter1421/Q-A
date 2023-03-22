@@ -16,7 +16,7 @@ def getQuestion():
     
 def addQuestion(question,email):
     try:
-        query=f"INSERT INTO `qa`.`question` (`content`, `mail`) VALUES ('{question}', '{email}');"
+        query=f"INSERT INTO `QA`.`Question` (`content`, `mail`) VALUES ('{question}', '{email}');"
         databaseHandler.execute(query)
         return True
     except:

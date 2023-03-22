@@ -13,6 +13,7 @@ class DataBase():
 
     def show(self, query):
         try:
+            print(query)
             self.cur.execute(query)
             results = self.cur.fetchall()
             self.db.commit()
@@ -22,6 +23,7 @@ class DataBase():
 
     def execute(self, query):
         try:
+            print(query)
             self.cur.execute(query)
             self.db.commit()
             print("execute成功")

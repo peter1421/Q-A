@@ -18,10 +18,17 @@
     <link rel="stylesheet" href="css/fontawesome.min.css">
     <!-- https://fontawesome.com/ -->
     <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+    </script>
     <!-- https://getbootstrap.com/ -->
     <link rel="stylesheet" href="css/tooplate.css">
 </head>
@@ -31,7 +38,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    
+
                     <nav class="navbar navbar-expand-xl navbar-light bg-light">
                         <a class="navbar-brand" href="/">
                             <i class="fas fa-3x fa-tachometer-alt tm-site-icon"></i>
@@ -64,7 +71,8 @@
                                                 data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">回答問題</a>
                                         </li>
                                         <!-- <li><a class="dropdown-item" href="#" id="getAllQuestion">輸出API</a></li> -->
-                                        <li><a class="dropdown-item" href="#">功能3</a></li>
+                                        <li><a class="dropdown-item" id="showAllQuestion" href="#">顯示所有問題</a></li>
+                                        <li><a class="dropdown-item" id="?" href="#">功能3</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item">
@@ -150,6 +158,10 @@
                     </div>
                 </div>
             </div>
+            <div class="row tm-mt-big" id="allQuestionShow">
+
+            </div>
+
         </div>
     </div>
     <script src="js/jquery-3.3.1.min.js"></script>
@@ -170,66 +182,26 @@
             });
         })
     </script>
-    <script>
+    <!-- <script type="module" src="js/request.js"></script> -->
+
+    <script type="module">
+        import { get, post } from './js/myTool/request.js';
+
         (function () {
+
             window.onload = function () {
                 $('#exampleModal').modal('show')
                 $('#getAllQuestion').trigger("click");
+
             }
             $("#getAllQuestion").click(getAllQuestion)
             $("#addQuestion").click(addQuestion)
+            $("#showAllQuestion").click(showAllQuestion())
 
-            function makeRequest(url) {
-                return new Promise((resolve, reject) => {
-                    var httpRequest = new XMLHttpRequest();
-                    if (!httpRequest) {
-                        alert('Giving up :( Cannot create an XMLHTTP instance');
-                        return false;
-                    }
-                    httpRequest.open('GET', url, true);
-                    httpRequest.send();
-                    httpRequest.onload = function () {
-                        if (alertContents(httpRequest)) {
-                            resolve(JSON.parse(httpRequest.responseText))
-                        } else {
-                            reject(new Error(httpRequest))
-                        }
-                    }
-                })
-            }
 
-            function post(url, request) {
-                return new Promise((resolve, reject) => {
-                    var httpRequest = new XMLHttpRequest();
-                    if (!httpRequest) {
-                        alert('Giving up :( Cannot create an XMLHTTP instance');
-                        return false;
-                    }
-                    console.log(JSON.stringify(request));
-                    httpRequest.open('post', url, true);
-                    httpRequest.setRequestHeader("Content-type", "application/json");
-                    httpRequest.send(JSON.stringify(request));
-                    httpRequest.onload = function () {
-                        if (alertContents(httpRequest)) {
-                            resolve(JSON.stringify(request));
-                        } else {
-                            reject(new Error(httpRequest))
-                        }
-                    }
-                })
-            }
-
-            function alertContents(httpRequest) {
-                if (httpRequest.status === 200) {
-                    return true;
-                } else {
-                    console.log('There was a problem with the request.');
-                    return false;
-                }
-            }
 
             function getAllQuestion() {
-                makeRequest('/api/question').then((res) => {
+                get('/api/question').then((res) => {
                         console.log(res);
                         printResponse(res)
                     })
@@ -239,7 +211,7 @@
 
                 function printResponse(res) {
                     $('#questionShow').empty();
-                    resQuestion=res['qestion']
+                    var resQuestion = res['qestion']
                     var index = Math.floor(Math.random() * resQuestion.length);
                     let newCardInfo =
                         `
@@ -252,7 +224,6 @@
                     `
                     $('#questionShow').append(newCardInfo);
                 }
-
             }
 
             function addQuestion() {
@@ -266,6 +237,40 @@
                     .catch((res) => {
                         console.error(res)
                     })
+            }
+
+            function showAllQuestion() {
+                get('/api/question').then((res) => {
+                        console.log(res);
+                        printResponse2(res)
+                    })
+                    .catch((res) => {
+                        console.error(res)
+                    })
+
+                function printResponse2(res) {
+                    $('#allQuestionShow').empty();
+                    var resQuestion = res['qestion']
+                    let html=''
+                    var times=0
+                    resQuestion.forEach(element => {
+                        let newCardInfo =
+                        `
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">
+                            <div class="bg-white">
+                                <div class="card-header">問題 ${++times}</div>
+                                <div class="card-body text-secondary">
+                                    <h5 class="card-title">${element.content}</h5>
+                                    <p class="card-text">${element.mail}</p>
+                                </div>
+                            </div>
+                        </div>
+                        `
+                        html+=newCardInfo
+                    });
+                    
+                    $('#allQuestionShow').append(html);
+                }
             }
         })();
     </script>
