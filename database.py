@@ -30,7 +30,6 @@ class DataBase():
         except:
             self.db.rollback()
 
-# t = DataBase()
 try:
     config = configparser.ConfigParser()
     config.read('config.ini')
@@ -42,3 +41,7 @@ except:
     dbhost = '34.80.238.171'
     dbuser='root'
     dbpass='fil12385ki'
+    
+def init():
+    global databaseHandler 
+    databaseHandler=DataBase()

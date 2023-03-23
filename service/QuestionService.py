@@ -1,13 +1,11 @@
 import database
 from model.Question import Question
 
-databaseHandler = database.DataBase()
-
 def getQuestionService():
     try:
         api=[]
         query='SELECT * FROM QA.Question;'
-        for item in databaseHandler.show(query):
+        for item in database.databaseHandler.show(query):
             temp=Question(id=item[0],content=item[1],email=item[2])
             api.append(temp.toApi())
         return {"question": api}
@@ -17,7 +15,7 @@ def getQuestionService():
 def addQuestionService(question,email):
     try:
         query=f"INSERT INTO `QA`.`Question` (`content`, `email`) VALUES ('{question}', '{email}');"
-        databaseHandler.execute(query)
+        database.databaseHandler.execute(query)
         return True
     except:
         return False

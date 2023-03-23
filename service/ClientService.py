@@ -1,13 +1,12 @@
 import database
 from model.Client import Client
 
-databaseHandler = database.DataBase()
 
 
 def crateClientService(Client):
     try:
         query=f"INSERT INTO `qa`.`ip` (`ip`,  `post`) VALUES ('{Client.ip}', '1');"
-        databaseHandler.execute(query)
+        database.databaseHandler.execute(query)
         return True
     except:
         return False
@@ -15,7 +14,7 @@ def crateClientService(Client):
 def updateClientService(Client):
     try:
         query=f"update `qa`.`ip` set `post`=`post`+1 where `ip` = '{Client.ip}';"
-        databaseHandler.execute(query)
+        database.databaseHandler.execute(query)
         return True
     except:
         return False

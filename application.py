@@ -1,6 +1,7 @@
 import os
 import json
 from flask import Flask, request, render_template, redirect, url_for, session
+from database import init
 from service.AnswerService import addAnswerService
 from model.Answer import Answer
 from model.Question import Question
@@ -70,4 +71,5 @@ def addQuestion():
 if __name__ == "__main__":
     # application.run()
     # application.run(debug=True, host="0.0.0.0", port=8080)
+    init()
     application.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8081)))
