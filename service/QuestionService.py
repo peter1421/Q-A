@@ -3,7 +3,7 @@ from model.Question import Question
 
 databaseHandler = database.DataBase()
 
-def getQuestion():
+def getQuestionService():
     try:
         api=[]
         query='SELECT * FROM QA.Question;'
@@ -14,7 +14,7 @@ def getQuestion():
     except:
         return 'ERROR'
     
-def addQuestion(question,email):
+def addQuestionService(question,email):
     try:
         query=f"INSERT INTO `QA`.`Question` (`content`, `email`) VALUES ('{question}', '{email}');"
         databaseHandler.execute(query)

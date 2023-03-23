@@ -4,8 +4,10 @@ from flask import Flask, request, render_template, redirect, url_for, session
 from service.AnswerService import addAnswerService
 from model.Answer import Answer
 from model.Question import Question
+from model.Client import Client
+from service.ClientService import  checkClientService
 
-from service.QuestionService import addQuestion, getQuestion
+from service.QuestionService import  addQuestionService, getQuestionService
 application = Flask(__name__, static_folder='static', static_url_path='')
 
 
@@ -23,37 +25,47 @@ def login():
 def products():
     return render_template("products.html")
 
-
 @application.route("/accounts")
 def accounts():
     return render_template("accounts.html")
 
+# @application.route("/api/temp")
+# def userData():
+#     return render_template("userData.html")
+
+
+
 @application.route("/api/question")
 def getAllQuestion():
-    return getQuestion()
+    return getQuestionService()
     # return redirect(url_for('index'))
 
 @application.route("/api/sendAnswer", methods=['POST'])
 def sendAnswer():
     try:
         requestApi = request.get_json()
-        answer=Answer(id=requestApi.get('id'),answer=requestApi.get('answer'))
-        addAnswerService(answer)
-        return {'state':200}
-    except Exception as e:
-        return {'state':400,'message':e}
-@application.route("/api/addQuestion", methods=['POST'])
-def addData():
-    try:
-        requestApi = request.get_json()
-        question=Question(content=requestApi.get('content'),email=requestApi.get('email'))
-        if(question.content and question.email and '@' in question.email):
-            if(addQuestion(question.content,question.email)):
-                return {'state':200}
+        if(checkClientService(requestApi.get('ip'))):
+            answer=Answer(id=requestApi.get('id'),answer=requestApi.get('answer'))
+            addAnswerService(answer)
+            return {'state':200}
         return {'state':500}
     except Exception as e:
         return {'state':400,'message':e}
-    
+@application.route("/api/addQuestion", methods=['POST'])
+def addQuestion():
+    try:
+        requestApi = request.get_json()
+        print('ssssssssssssssssssssssssssssssss')
+
+        if(checkClientService(requestApi.get('ip'))):
+            question=Question(content=requestApi.get('content'),email=requestApi.get('email'))
+            if(question.content and question.email and '@' in question.email):
+                if(addQuestionService(question.content,question.email)):
+                    return {'state':200}
+        return {'state':500}
+    except Exception as e:
+        return {'state':400,'message':e}
+
 # run the app.
 if __name__ == "__main__":
     # application.run()

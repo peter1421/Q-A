@@ -1,4 +1,4 @@
-export  function get(url) {
+export function get(url) {
   return new Promise((resolve, reject) => {
     var httpRequest = new XMLHttpRequest();
     if (!httpRequest) {
@@ -24,7 +24,6 @@ export function post(url, request) {
       alert("Giving up :( Cannot create an XMLHTTP instance");
       return false;
     }
-    console.log(JSON.stringify(request));
     httpRequest.open("post", url, true);
     httpRequest.setRequestHeader("Content-type", "application/json");
     httpRequest.send(JSON.stringify(request));
@@ -40,10 +39,16 @@ export function post(url, request) {
 }
 function alertContents(httpRequest) {
   if (httpRequest.status === 200) {
-      return true;
+    return true;
   } else {
-      console.log('There was a problem with the request.');
-      return false;
+    console.log("There was a problem with the request.");
+    return false;
   }
+}
+export function getIp() {
+  $.getJSON("https://api.ipify.org?format=json", function (data) {
+    console.log(data.ip);
+    return data.ip;
+  });
 }
 // export {get, post}

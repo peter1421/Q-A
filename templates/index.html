@@ -170,7 +170,6 @@
     <!-- https://jquery.com/download/ -->
     <!-- <script src="js/bootstrap.min.js"></script> -->
     <!-- https://getbootstrap.com/ -->
-
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
         integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
     </script>
@@ -184,23 +183,26 @@
             });
         })
     </script>
-
     <script type="module">
         import { get, post } from './js/myTool/request.js';
         (function () {
             var index=0
-            var resQuestion
+            var resQuestion=''
+            var ip='0.0.0.0'
+            
             window.onload = function () {
+                $.getJSON("https://api.ipify.org?format=json", function (data) {
+                    ip=data.ip
+                })
+                $("#showAllQuestion").click(showAllQuestion())
                 $('#exampleModal').modal('show')
                 $('#getAllQuestion').trigger("click");
             }
             $("#getAllQuestion").click(getAllQuestion)
             $("#addQuestion").click(addQuestion)
-            $("#showAllQuestion").click(showAllQuestion())
             $("#sendAnswer").click(sendAnswer)
 
-
-
+            
             function getAllQuestion() {
                 get('/api/question').then((res) => {
                         resQuestion = res['question']
@@ -227,11 +229,13 @@
             }
 
             function addQuestion() {
-                var question = {
+                var request = {
                     content: $("#content").val(),
-                    email: $("#email").val()
+                    email: $("#email").val(),
+                    ip:ip
                 }
-                post('/api/addQuestion', question).then((res) => {
+                
+                post('/api/addQuestion', request).then((res) => {
                     if(res['state']==200) {
                         alert('成功')
                         location.reload()
@@ -244,11 +248,13 @@
                     })
             }
             function sendAnswer() {
-                var question = {
+                var request = {
                     answer: $("#answerSend").val(),
-                    id: resQuestion[index].id
+                    id: resQuestion[index].id,
+                    ip:ip
                 }
-                post('/api/sendAnswer', question).then((res) => {
+                if(request.answer){
+                post('/api/sendAnswer', request).then((res) => {
                     if(res['state']==200) {
                         alert('成功')
                         location.reload()
@@ -259,6 +265,7 @@
                     .catch((res) => {
                         console.error(res)
                     })
+                }
             }
             function showAllQuestion() {
                 get('/api/question').then((res) => {
@@ -270,7 +277,7 @@
 
                 function printResponse(res) {
                     $('#allQuestionShow').empty();
-                    var resQuestion = res['question']
+                    resQuestion = res['question']
                     let html=''
                     var times=0
                     resQuestion.forEach(element => {
