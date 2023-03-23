@@ -1,30 +1,13 @@
 import os
 import json
 from flask import Flask, request, render_template, redirect, url_for, session
-import requests
-import bs4
+from service.AnswerService import addAnswerService
+from model.Answer import Answer
+from model.Question import Question
 
 from service.QuestionService import addQuestion, getQuestion
 application = Flask(__name__, static_folder='static', static_url_path='')
 
-def get():
-    url = "https://forum.gamer.com.tw/C.php?bsn=36730&snA=33353"
-    response = requests.get(url, headers={
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36"})
-    root = bs4.BeautifulSoup(response.text, "html.parser")
-    print(response)
-    # print(root)
-    return root
-
-def content(root):
-    count = 0
-    floor = root.find_all(class_="c-article__content")
-    for x in floor:
-        count = count+1
-        if(count % 2 == 0 and x.text != 'None'):
-            lis.append(x.text)
-
-lis = []
 
 @application.route("/")
 def index():
@@ -50,29 +33,27 @@ def getAllQuestion():
     return getQuestion()
     # return redirect(url_for('index'))
 
-@application.route("/api/temp")
-def temp():
-    content(get())
-    return lis
-    # return redirect(url_for('index'))
-
+@application.route("/api/sendAnswer", methods=['POST'])
+def sendAnswer():
+    try:
+        requestApi = request.get_json()
+        answer=Answer(id=requestApi.get('id'),answer=requestApi.get('answer'))
+        addAnswerService(answer)
+        return {'state':200}
+    except Exception as e:
+        return {'state':400,'message':e}
 @application.route("/api/addQuestion", methods=['POST'])
 def addData():
     try:
         requestApi = request.get_json()
-        content = requestApi.get('content')
-        email = requestApi.get('email')
-        print(content)
-        print(email)
-        if(content and email and '@' in email):
-            if(addQuestion(content,email)):
-                return redirect("/")
-        print('????????')
-        return redirect("/")
+        question=Question(content=requestApi.get('content'),email=requestApi.get('email'))
+        if(question.content and question.email and '@' in question.email):
+            if(addQuestion(question.content,question.email)):
+                return {'state':200}
+        return {'state':500}
     except Exception as e:
-        data = "錯誤原因:{}".format(str(e))
-        print(data)
-        return redirect("/")
+        return {'state':400,'message':e}
+    
 # run the app.
 if __name__ == "__main__":
     # application.run()

@@ -114,8 +114,10 @@
                         <div class="modal-body" id="questionShow">
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Send message</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                            <!-- <button type="button" class="btn btn-primary" id="sendAnswer">送出答案</button> -->
+                            <button type="submit" class="btn btn-primary d-inline-block mx-auto"
+                                id="sendAnswer">送出</button>
                         </div>
                     </div>
                 </div>
@@ -182,27 +184,27 @@
             });
         })
     </script>
-    <!-- <script type="module" src="js/request.js"></script> -->
 
     <script type="module">
         import { get, post } from './js/myTool/request.js';
-
         (function () {
-
+            var index=0
+            var resQuestion
             window.onload = function () {
                 $('#exampleModal').modal('show')
                 $('#getAllQuestion').trigger("click");
-
             }
             $("#getAllQuestion").click(getAllQuestion)
             $("#addQuestion").click(addQuestion)
             $("#showAllQuestion").click(showAllQuestion())
+            $("#sendAnswer").click(sendAnswer)
 
 
 
             function getAllQuestion() {
                 get('/api/question').then((res) => {
-                        console.log(res);
+                        resQuestion = res['question']
+                        index = Math.floor(Math.random() * resQuestion.length);
                         printResponse(res)
                     })
                     .catch((res) => {
@@ -211,17 +213,15 @@
 
                 function printResponse(res) {
                     $('#questionShow').empty();
-                    var resQuestion = res['qestion']
-                    var index = Math.floor(Math.random() * resQuestion.length);
                     let newCardInfo =
                         `
                         <form>
                             <div class="mb-3">
-                                <label for="recipient-name" class="col-form-label" > ${resQuestion[index].content}</label>
-                                <input type="text" class="form-control" id="recipient-name">
+                                <p for="recipient-name" class="col-form-label" id='questionContent'> ${resQuestion[index].content}</label>
+                                <input type="text" class="form-control" id="answerSend">
                             </div>
                         </form>
-                    `
+                        `
                     $('#questionShow').append(newCardInfo);
                 }
             }
@@ -232,25 +232,45 @@
                     email: $("#email").val()
                 }
                 post('/api/addQuestion', question).then((res) => {
-                        alert(res + ' successfully!')
+                    if(res['state']==200) {
+                        alert('成功')
+                        location.reload()
+                    }else{
+                        alert('出現錯誤')
+                    }
                     })
                     .catch((res) => {
                         console.error(res)
                     })
             }
-
+            function sendAnswer() {
+                var question = {
+                    answer: $("#answerSend").val(),
+                    id: resQuestion[index].id
+                }
+                post('/api/sendAnswer', question).then((res) => {
+                    if(res['state']==200) {
+                        alert('成功')
+                        location.reload()
+                    }else{
+                        alert('出現錯誤')
+                    }
+                    })
+                    .catch((res) => {
+                        console.error(res)
+                    })
+            }
             function showAllQuestion() {
                 get('/api/question').then((res) => {
-                        console.log(res);
-                        printResponse2(res)
+                        printResponse(res)
                     })
                     .catch((res) => {
                         console.error(res)
                     })
 
-                function printResponse2(res) {
+                function printResponse(res) {
                     $('#allQuestionShow').empty();
-                    var resQuestion = res['qestion']
+                    var resQuestion = res['question']
                     let html=''
                     var times=0
                     resQuestion.forEach(element => {
@@ -261,14 +281,13 @@
                                 <div class="card-header">問題 ${++times}</div>
                                 <div class="card-body text-secondary">
                                     <h5 class="card-title">${element.content}</h5>
-                                    <p class="card-text">${element.mail}</p>
+                                    <p class="card-text">${element.email}</p>
                                 </div>
                             </div>
                         </div>
                         `
                         html+=newCardInfo
                     });
-                    
                     $('#allQuestionShow').append(html);
                 }
             }

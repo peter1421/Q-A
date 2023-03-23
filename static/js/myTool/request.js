@@ -30,7 +30,8 @@ export function post(url, request) {
     httpRequest.send(JSON.stringify(request));
     httpRequest.onload = function () {
       if (alertContents(httpRequest)) {
-        resolve(JSON.stringify(request));
+        resolve(JSON.parse(httpRequest.responseText));
+        // resolve(JSON.stringify(httpRequest.responseText));
       } else {
         reject(new Error(httpRequest));
       }

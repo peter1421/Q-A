@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `QA` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `QA`;
 -- MySQL dump 10.13  Distrib 8.0.26, for Win64 (x86_64)
 --
 -- Host: 34.80.238.171    Database: QA
@@ -21,7 +23,6 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup 
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '01effd06-c478-11ed-a136-42010a400003:1-45009';
 
 --
 -- Table structure for table `Question`
@@ -36,7 +37,7 @@ CREATE TABLE `Question` (
   `mail` varchar(45) DEFAULT NULL,
   `answer` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +46,7 @@ CREATE TABLE `Question` (
 
 LOCK TABLES `Question` WRITE;
 /*!40000 ALTER TABLE `Question` DISABLE KEYS */;
-INSERT INTO `Question` VALUES (1,'1+3=?',NULL,NULL),(2,'5+5=?','aad@gmail.com',NULL),(3,'44-33=?','dd@gmail.com',NULL);
+INSERT INTO `Question` VALUES (1,'1+3=?',NULL,NULL),(2,'5+5=?','aad@gmail.com',NULL),(3,'44-33=?','dd@gmail.com',NULL),(4,'44*8=?','asd@gmail.com',NULL);
 /*!40000 ALTER TABLE `Question` ENABLE KEYS */;
 UNLOCK TABLES;
 SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
@@ -59,4 +60,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-22 23:50:08
+-- Dump completed on 2023-03-23 13:31:11
