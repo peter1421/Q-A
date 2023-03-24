@@ -96,18 +96,12 @@
                     </nav>
                 </div>
             </div>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
-                data-whatever="@mdo">Open modal for @mdo</button>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
-                data-whatever="@fat">Open modal for @fat</button>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
-                data-whatever="@getbootstrap">Open modal for @getbootstrap</button>
-
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
+                            <h5 class="modal-id" id="exampleModalLabel" style="visibility: hidden">New message</h5>
                             <h5 class="modal-title" id="exampleModalLabel">New message</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -116,18 +110,14 @@
                         <div class="modal-body">
                             <form>
                                 <div class="form-group">
-                                    <label for="recipient-name" class="col-form-label">Recipient:</label>
-                                    <input type="text" class="form-control" id="recipient-name">
-                                </div>
-                                <div class="form-group">
-                                    <label for="message-text" class="col-form-label">Message:</label>
-                                    <textarea class="form-control" id="message-text"></textarea>
+                                    <label for="message-text" class="col-form-label">你的答案:</label>
+                                    <textarea class="form-control" id="answerSend"></textarea>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Send message</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                            <button type="button" class="btn btn-primary" id="sendAnswer">送出</button>
                         </div>
                     </div>
                 </div>
@@ -218,54 +208,19 @@
             var ip='0.0.0.0'
             window.onload = function () {
                 ip=$("#ip").text()
-                initQuestionDialog()
+                showAllQuestion()
             }
-            $("#showAllQuestion").click(showAllQuestion())
-            $("#showQuestionDialog").click(showQuestionDialog(index))
+            $("#showAllQuestion").click(showAllQuestion)
             $("#addQuestion").click(addQuestion)
             $("#sendAnswer").click(sendAnswer)
             $('#exampleModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget) // Button that triggered the modal
-                var recipient = button.data('whatever') // Extract info from data-* attributes
-                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-                var modal = $(this)
-                modal.find('.modal-title').text('New message to ' + recipient)
-                modal.find('.modal-body input').val(recipient)
-            })
-            
-            function showQuestionDialog(target) {
-                if(target==0){
-                    get('/api/question').then((res) => {
-                            resQuestion = res['question']
-                            target=index = Math.floor(Math.random() * resQuestion.length);
-                            printResponse(target)
-                        })
-                        .catch((res) => {
-                            console.error(res)
-                        })
-                }else{
-                    printResponse(target)
-                }
-                function printResponse(target) {
-                    console.log(target);
-                    $('#questionDialog').empty();
-                    let newCardInfo =
-                        `
-                        <form>
-                            <div class="mb-3">
-                                <p for="recipient-name" class="col-form-label" id='questionContent'> ${resQuestion[target].content}</label>
-                                <input type="text" class="form-control" id="answerSend">
-                            </div>
-                        </form>
-                        `
-                    $('#questionDialog').append(newCardInfo);
-                }
-            }
-            function initQuestionDialog(Dialog) {
-                $('#exampleModal').modal('show')
-                $('#showQuestionDialog').trigger("click");
-            }
+                    var button = $(event.relatedTarget) // Button that triggered the modal
+                    var content = button.data('content') // Extract info from data-* attributes
+                    var id = button.data('id') // Extract info from data-* attributes
+                    var modal = $(this)
+                    modal.find('.modal-id').text(id)
+                    modal.find('.modal-title').text(content)
+                })
             function addQuestion() {
                 var request = {
                     content: $("#content").val(),
@@ -274,10 +229,10 @@
                 }
                 post('/api/addQuestion', request).then((res) => {
                     if(res['state']==200) {
-                        alert('成功')
+                        alert(`送出成功`)
                         location.reload()
                     }else{
-                        alert('出現錯誤')
+                        alert(`出現錯誤`)
                     }
                     })
                     .catch((res) => {
@@ -287,16 +242,16 @@
             function sendAnswer() {
                 var request = {
                     answer: $("#answerSend").val(),
-                    id: resQuestion[index].id,
+                    id: $(".modal-id").text(),
                     ip:ip
                 }
                 if(request.answer){
                 post('/api/sendAnswer', request).then((res) => {
                     if(res['state']==200) {
-                        alert('成功')
+                        alert(`${request.answer} 送出成功`)
                         location.reload()
                     }else{
-                        alert('出現錯誤')
+                        alert(`${request.answer} 出現錯誤`)
                     }
                     })
                     .catch((res) => {
@@ -306,15 +261,18 @@
             }
             function showAllQuestion() {
                 get('/api/question').then((res) => {
-                        printResponse(res)
+                        resQuestion = res['question']
+                        index = Math.floor(Math.random() * resQuestion.length);
+                        printResponse(resQuestion)
+                    }).then((res) => {
+                        var dialogId="#showQuestionDialog"+index
+                        $(dialogId).trigger("click");
                     })
                     .catch((res) => {
                         console.error(res)
-                    })
-
-                function printResponse(res) {
+                    });
+                function printResponse(resQuestion) {
                     $('#allQuestionShow').empty();
-                    resQuestion = res['question']
                     let html=''
                     var times=0
                     resQuestion.forEach(element => {
@@ -327,9 +285,7 @@
                                 <div class="card-body text-secondary">
                                     <h5 class="card-title">${element.content}</h5>
                                     <p class="card-text">${element.email}</p>
-                                    <button class="btn btn-primary d-inline-block mx-auto" id="showQuestionDialog" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal" data-bs-whatever='oooo'>回答問題</button>
-                                        
+                                    <button type="button" class="btn btn-primary" id="showQuestionDialog${element.id}" data-toggle="modal" data-target="#exampleModal" data-content="${element.content}" data-id="${element.id}">回答問題</button>    
                                     </div>
                             </div>
                         </div>
