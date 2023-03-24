@@ -45,10 +45,10 @@ function alertContents(httpRequest) {
     return false;
   }
 }
-export function getIp() {
-  $.getJSON("https://api.ipify.org?format=json", function (data) {
-    console.log(data.ip);
-    return data.ip;
-  });
-}
+// export function getIp() {
+//   $.getJSON("https://api.ipify.org?format=json", function (data) {
+//     console.log(data.ip);
+//     return data.ip;
+//   });
+// }
 // export {get, post}
