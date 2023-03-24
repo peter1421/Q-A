@@ -173,7 +173,9 @@
             <div class="row tm-mt-big" id="allQuestionShow">
 
             </div>
+            <div class="row tm-mt-big" style="visibility: hidden" id="ip">
 
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -202,19 +204,21 @@
             });
         })
     </script> -->
+    <script>
+        function getIP(json) {
+            $('#ip').text(json.ip);
+        }
+    </script>
+    <script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=getIP"></script>
     <script type="module">
         import { get, post } from './js/myTool/request.js';
         (function () {
             var index=0
-            var resQuestion=''
+            var resQuestion='null'
             var ip='0.0.0.0'
-            
             window.onload = function () {
-                // $.getJSON("https://api.ipify.org?format=json", function (data) {
-                //     ip=data.ip
-                //     console.log(ip);
-                // })
-                // initQuestionDialog()
+                ip=$("#ip").text()
+                initQuestionDialog()
             }
             $("#showAllQuestion").click(showAllQuestion())
             $("#showQuestionDialog").click(showQuestionDialog(index))
@@ -268,7 +272,6 @@
                     email: $("#email").val(),
                     ip:ip
                 }
-                
                 post('/api/addQuestion', request).then((res) => {
                     if(res['state']==200) {
                         alert('成功')
