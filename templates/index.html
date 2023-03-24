@@ -20,15 +20,6 @@
     <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
-        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"
-        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
-    </script>
     <!-- https://getbootstrap.com/ -->
     <link rel="stylesheet" href="css/tooplate.css">
 </head>
@@ -57,7 +48,7 @@
                                         API
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="/api/question">getAllQuestion</a>
+                                        <a class="dropdown-item" href="/api/question">showQuestionDialog</a>
                                         <a class="dropdown-item" href="/api/temp">Temp</a>
                                         <a class="dropdown-item" href="#">API3</a>
                                     </div>
@@ -67,10 +58,13 @@
                                         測試功能
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-dark">
-                                        <li><a class="dropdown-item" id="getAllQuestion" data-bs-toggle="modal"
+                                        <li><a class="dropdown-item" id="showQuestionDialog" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">回答問題</a>
                                         </li>
-                                        <!-- <li><a class="dropdown-item" href="#" id="getAllQuestion">輸出API</a></li> -->
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#exampleModal" id="showQuestionDialog"
+                                            data-whatever="@getbootstrap">Open modal for @getbootstrap</button>
+                                        <!-- <li><a class="dropdown-item" href="#" id="showQuestionDialog">輸出API</a></li> -->
                                         <li><a class="dropdown-item" id="showAllQuestion" href="#">顯示所有問題</a></li>
                                         <li><a class="dropdown-item" id="?" href="#">功能3</a></li>
                                     </ul>
@@ -102,22 +96,28 @@
                     </nav>
                 </div>
             </div>
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">問題</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close">X</button>
+                            <h5 class="modal-id" id="exampleModalLabel" style="visibility: hidden">New message</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                        <div class="modal-body" id="questionShow">
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="message-text" class="col-form-label">你的答案:</label>
+                                    <textarea class="form-control" id="answerSend"></textarea>
+                                </div>
+                            </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-                            <!-- <button type="button" class="btn btn-primary" id="sendAnswer">送出答案</button> -->
-                            <button type="submit" class="btn btn-primary d-inline-block mx-auto"
-                                id="sendAnswer">送出</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                            <button type="button" class="btn btn-primary" id="sendAnswer">送出</button>
                         </div>
                     </div>
                 </div>
@@ -163,84 +163,76 @@
             <div class="row tm-mt-big" id="allQuestionShow">
 
             </div>
+            <div class="row tm-mt-big" style="visibility: hidden" id="ip">
 
+            </div>
         </div>
     </div>
-    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+    </script>
+    <!-- <script src="js/jquery-3.3.1.min.js"></script> -->
     <!-- https://jquery.com/download/ -->
     <!-- <script src="js/bootstrap.min.js"></script> -->
     <!-- https://getbootstrap.com/ -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
         integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
         integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous">
-    </script>
-    <script>
+    </script> -->
+    <!-- <script>
         $(function () {
             $('.tm-product-name').on('click', function () {
                 window.location.href = "edit-product.html";
             });
         })
+    </script> -->
+    <script>
+        function getIP(json) {
+            $('#ip').text(json.ip);
+        }
     </script>
+    <script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=getIP"></script>
     <script type="module">
         import { get, post } from './js/myTool/request.js';
         (function () {
             var index=0
-            var resQuestion=''
+            var resQuestion='null'
             var ip='0.0.0.0'
-            
             window.onload = function () {
-                $.getJSON("https://api.ipify.org?format=json", function (data) {
-                    ip=data.ip
-                })
-                $("#showAllQuestion").click(showAllQuestion())
-                $('#exampleModal').modal('show')
-                $('#getAllQuestion').trigger("click");
+                ip=$("#ip").text()
+                showAllQuestion()
             }
-            $("#getAllQuestion").click(getAllQuestion)
+            $("#showAllQuestion").click(showAllQuestion)
             $("#addQuestion").click(addQuestion)
             $("#sendAnswer").click(sendAnswer)
-
-            
-            function getAllQuestion() {
-                get('/api/question').then((res) => {
-                        resQuestion = res['question']
-                        index = Math.floor(Math.random() * resQuestion.length);
-                        printResponse(res)
-                    })
-                    .catch((res) => {
-                        console.error(res)
-                    })
-
-                function printResponse(res) {
-                    $('#questionShow').empty();
-                    let newCardInfo =
-                        `
-                        <form>
-                            <div class="mb-3">
-                                <p for="recipient-name" class="col-form-label" id='questionContent'> ${resQuestion[index].content}</label>
-                                <input type="text" class="form-control" id="answerSend">
-                            </div>
-                        </form>
-                        `
-                    $('#questionShow').append(newCardInfo);
-                }
-            }
-
+            $('#exampleModal').on('show.bs.modal', function (event) {
+                    var button = $(event.relatedTarget) // Button that triggered the modal
+                    var content = button.data('content') // Extract info from data-* attributes
+                    var id = button.data('id') // Extract info from data-* attributes
+                    var modal = $(this)
+                    modal.find('.modal-id').text(id)
+                    modal.find('.modal-title').text(content)
+                })
             function addQuestion() {
                 var request = {
                     content: $("#content").val(),
                     email: $("#email").val(),
                     ip:ip
                 }
-                
                 post('/api/addQuestion', request).then((res) => {
                     if(res['state']==200) {
-                        alert('成功')
+                        alert(`送出成功`)
                         location.reload()
                     }else{
-                        alert('出現錯誤')
+                        alert(`出現錯誤`)
                     }
                     })
                     .catch((res) => {
@@ -250,16 +242,16 @@
             function sendAnswer() {
                 var request = {
                     answer: $("#answerSend").val(),
-                    id: resQuestion[index].id,
+                    id: $(".modal-id").text(),
                     ip:ip
                 }
                 if(request.answer){
                 post('/api/sendAnswer', request).then((res) => {
                     if(res['state']==200) {
-                        alert('成功')
+                        alert(`${request.answer} 送出成功`)
                         location.reload()
                     }else{
-                        alert('出現錯誤')
+                        alert(`${request.answer} 出現錯誤`)
                     }
                     })
                     .catch((res) => {
@@ -269,15 +261,18 @@
             }
             function showAllQuestion() {
                 get('/api/question').then((res) => {
-                        printResponse(res)
+                        resQuestion = res['question']
+                        index = Math.floor(Math.random() * resQuestion.length);
+                        printResponse(resQuestion)
+                    }).then((res) => {
+                        var dialogId="#showQuestionDialog"+index
+                        $(dialogId).trigger("click");
                     })
                     .catch((res) => {
                         console.error(res)
-                    })
-
-                function printResponse(res) {
+                    });
+                function printResponse(resQuestion) {
                     $('#allQuestionShow').empty();
-                    resQuestion = res['question']
                     let html=''
                     var times=0
                     resQuestion.forEach(element => {
@@ -286,10 +281,12 @@
                         <div class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">
                             <div class="bg-white">
                                 <div class="card-header">問題 ${++times}</div>
+                                <div style="display:none" id=''>${element.id}</div>
                                 <div class="card-body text-secondary">
                                     <h5 class="card-title">${element.content}</h5>
                                     <p class="card-text">${element.email}</p>
-                                </div>
+                                    <button type="button" class="btn btn-primary" id="showQuestionDialog${element.id}" data-toggle="modal" data-target="#exampleModal" data-content="${element.content}" data-id="${element.id}">回答問題</button>    
+                                    </div>
                             </div>
                         </div>
                         `
