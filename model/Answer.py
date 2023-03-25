@@ -2,13 +2,14 @@ class Answer:
     # 建構式
     # def __init__(self):
 
-    def __init__(self, id='0', answer=''):
+    def __init__(self, id='0', answer='',time=''):
         self.id = id
-        self. answer =  answer
+        self. answer =  str(answer)
+        self. time =  time
     # 方法(Method)
 
     def toApi(self):
-        self.api={'id': self.id, 'answer': self.answer}
+        self.api={'id': self.id, 'answer': self.answer,'time': self.time}
         return self.api
     def fromApi(self,api):
         print(api)
@@ -19,5 +20,9 @@ class Answer:
         try:
             self.answer= api['answer'] 
         except:
-            self.answer=''     
+            self.answer=''
+        try:
+            self.time= api['time'] 
+        except:
+            self.time=''         
         return True

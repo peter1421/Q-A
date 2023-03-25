@@ -29,7 +29,6 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-
                     <nav class="navbar navbar-expand-xl navbar-light bg-light">
                         <a class="navbar-brand" href="/">
                             <i class="fas fa-3x fa-tachometer-alt tm-site-icon"></i>
@@ -50,6 +49,8 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                         <a class="dropdown-item" href="/api/question">getAllQuestion</a>
+                                        <a class="dropdown-item" href="/api/getAnswer/1">取得1號解答</a>
+                                        <a class="dropdown-item" href="/api/getAnswer/2">取得1號解答</a>
                                     </div>
                                 </div>
                                 <div class="nav-item dropdown">
@@ -67,13 +68,11 @@
                                         模板暫存
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                        <a class="dropdown-item"  href="/dashboard">Dashboard</a>
-                                        <a class="dropdown-item"  href="/products">Products</a>
-                                        <a class="dropdown-item"  href="/accounts">Accounts</a>
+                                        <a class="dropdown-item" href="/dashboard">Dashboard</a>
+                                        <a class="dropdown-item" href="/products">Products</a>
+                                        <a class="dropdown-item" href="/accounts">Accounts</a>
                                     </div>
                                 </div>
-
-
                             </ul>
                             <ul class="navbar-nav">
                                 <li class="nav-item">
@@ -93,7 +92,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-id" id="questionDialogLabel" style="visibility: hidden">New message</h5>
-                            <h5 class="modal-title" id="questionDialogLabel">New message</h5>
+                            <h5 class="modal-title" id="questionDialogLabel" style=" word-wrap: break-word;word-break: break-all;overflow: hidden;">New message</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -110,6 +109,17 @@
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
                             <button type="button" class="btn btn-primary" id="sendAnswer">送出</button>
                         </div>
+                        <div>
+                            <div class="alert alert-warning" id="answerRemind" role="alert">
+                                送出答案後觀看其他人的回答
+                            </div>
+                            <div class="alert alert-primary" id="answerShow" role="alert">
+                                其他人的回答
+                            </div>
+                            <ul class="list-group" id="allAnswer">
+                            </ul>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -168,23 +178,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
     </script>
-    <!-- <script src="js/jquery-3.3.1.min.js"></script> -->
-    <!-- https://jquery.com/download/ -->
-    <!-- <script src="js/bootstrap.min.js"></script> -->
-    <!-- https://getbootstrap.com/ -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
-        integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous">
-    </script> -->
-    <!-- <script>
-        $(function () {
-            $('.tm-product-name').on('click', function () {
-                window.location.href = "edit-product.html";
-            });
-        })
-    </script> -->
     <script>
         function getIP(json) {
             $('#ip').text(json.ip);
@@ -205,13 +198,26 @@
             $("#addQuestion").click(addQuestion)
             $("#sendAnswer").click(sendAnswer)
             $('#questionDialog').on('show.bs.modal', function (event) {
+                    answerController(false)
                     var button = $(event.relatedTarget) // Button that triggered the modal
                     var content = button.data('content') // Extract info from data-* attributes
                     var id = button.data('id') // Extract info from data-* attributes
                     var modal = $(this)
                     modal.find('.modal-id').text(id)
                     modal.find('.modal-title').text(content)
-                })
+            })
+
+            function answerController(answerCounter){
+                if(!answerCounter){
+                    $("#answerRemind").show();
+                    $("#answerShow").hide();
+                    $("#allAnswer").hide();
+                }else{
+                    $("#answerRemind").hide();
+                    $("#answerShow").show();
+                    $("#allAnswer").show();
+                }
+            }    
             function addQuestion() {
                 var request = {
                     content: $("#content").val(),
@@ -240,19 +246,47 @@
                 post('/api/sendAnswer', request).then((res) => {
                     if(res['state']==200) {
                         alert(`${request.answer} 送出成功`)
-                        location.reload()
+                        showAnswer(request.id)
                     }else{
                         alert(`${request.answer} 出現錯誤`)
                     }
+                    }).then((res) => {
+                        
                     })
                     .catch((res) => {
                         console.error(res)
                     })
                 }
             }
+            function showAnswer(id) {
+                get(`/api/getAnswer/${id}`).then((res) => {
+                    console.log(res);
+                        printResponse(res['answer'])
+                        answerController(true)
+                    })
+                    .catch((res) => {
+                        console.error(res)
+                    });
+                    function printResponse(resAnswer) {
+                    $('#allAnswer').empty();
+                    let html=''
+                    var times=0
+                    resAnswer.forEach(element => {
+                        let newCardInfo =
+                        `
+                        <li class="list-group-item d-flex justify-content-between align-items-center" style=" word-wrap: break-word;word-break: break-all;overflow: hidden;">
+                            ${element.answer.replace(/\n/g, "<br>")}
+                            <span class="badge badge-primary badge-pill">0</span>
+                        </li>
+                        `
+                        html+=newCardInfo
+                    });
+                    $('#allAnswer').append(html);
+                }
+            }
             function showAllQuestion() {
                 get('/api/question').then((res) => {
-                        resQuestion = res['question']
+                        resQuestion = res['question'].reverse()
                         index = Math.floor(Math.random() * resQuestion.length);
                         printResponse(resQuestion)
                     }).then((res) => {
@@ -274,7 +308,7 @@
                                 <div class="card-header">問題 ${++times}</div>
                                 <div style="display:none" id=''>${element.id}</div>
                                 <div class="card-body text-secondary">
-                                    <h5 class="card-title">${element.content}</h5>
+                                    <h5 class="card-title" style=" word-wrap: break-word;word-break: break-all;overflow: hidden;">${element.content}</h5>
                                     <p class="card-text">${element.email}</p>
                                     <button type="button" class="btn btn-primary" id="showQuestionDialog${element.id}" data-toggle="modal" data-target="#questionDialog" data-content="${element.content}" data-id="${element.id}">回答問題</button>    
                                     </div>

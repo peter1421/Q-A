@@ -2,7 +2,7 @@ import os
 import json
 from flask import Flask, request, render_template, redirect, url_for, session
 from database import init
-from service.AnswerService import addAnswerService
+from service.AnswerService import addAnswerService, getAnswerService
 from model.Answer import Answer
 from model.Question import Question
 from model.Client import Client
@@ -30,17 +30,15 @@ def products():
 def accounts():
     return render_template("accounts.html")
 
-# @application.route("/api/temp")
-# def userData():
-#     return render_template("userData.html")
-
-
 
 @application.route("/api/question")
-def getAllQuestion():
+def getQuestion():
     return getQuestionService()
     # return redirect(url_for('index'))
 
+@application.route("/api/getAnswer/<id>")
+def getAnswer(id):
+    return getAnswerService(id)
 @application.route("/api/sendAnswer", methods=['POST'])
 def sendAnswer():
     try:
