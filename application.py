@@ -56,8 +56,6 @@ def sendAnswer():
 def addQuestion():
     try:
         requestApi = request.get_json()
-        print('ssssssssssssssssssssssssssssssss')
-
         if(checkClientService(requestApi.get('ip'))):
             question=Question(content=requestApi.get('content'),email=requestApi.get('email'))
             if(question.content and question.email and '@' in question.email):

@@ -33,12 +33,13 @@ def addClientService(Client):
 def getClientService(ip):
     try:
         query=f"SELECT `post` FROM  `qa`.`ip` where `ip`= '{ip}';"
-        return databaseHandler.show(query)[0][0]
+        return database.databaseHandler.show(query)[0][0]
     except:
         return 0
     
 def checkClientService(ip):
-    if (getClientService(ip)<10):
+    if (getClientService(ip)<100):
         return addClientService(Client(ip))
     else:
+        print('已超過次數')
         return False
