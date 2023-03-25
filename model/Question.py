@@ -1,8 +1,11 @@
+from database import checkResponse
+
+
 class Question:
     # 建構式
     # def __init__(self):
 
-    def __init__(self, id='0', content='',email=''):
+    def __init__(self, id='0', content='',email='null@mail'):
         self.id = id
         self. content =  content
         self. email =  email
@@ -27,3 +30,7 @@ class Question:
         except:
             self.email='' 
         return True
+    def check(self):
+        if(checkResponse(self.id) and checkResponse(self.content)and checkResponse(self.email)):
+            return True
+        return False

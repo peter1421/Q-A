@@ -3,43 +3,44 @@ from model.Client import Client
 
 
 
-def crateClientService(Client):
+def crateClientService(databaseHandler,Client):
     try:
         query=f"INSERT INTO `qa`.`ip` (`ip`,  `post`) VALUES ('{Client.ip}', '1');"
-        database.databaseHandler.execute(query)
+        databaseHandler.execute(query)
         return True
     except:
         return False
     
-def updateClientService(Client):
+def updateClientService(databaseHandler,Client):
     try:
         query=f"update `qa`.`ip` set `post`=`post`+1 where `ip` = '{Client.ip}';"
-        database.databaseHandler.execute(query)
+        databaseHandler.execute(query)
         return True
     except:
         return False
         
-def addClientService(Client):
+def addClientService(databaseHandler,Client):
     try:
         try:
-            updateClientService(Client)
+            updateClientService(databaseHandler,Client)
         except:
-            crateClientService(Client)
+            crateClientService(databaseHandler,Client)
         return True
     except:
         return False
     
 
-def getClientService(ip):
+def getClientService(databaseHandler,ip):
     try:
         query=f"SELECT `post` FROM  `qa`.`ip` where `ip`= '{ip}';"
-        return database.databaseHandler.show(query)[0][0]
+        return databaseHandler.show(query)[0][0]
     except:
         return 0
     
-def checkClientService(ip):
-    if (getClientService(ip)<100):
-        return addClientService(Client(ip))
+def checkClientService(databaseHandler,ip):
+    if (getClientService(databaseHandler,ip)<100):
+        return addClientService(databaseHandler,Client(ip))
     else:
         print('已超過次數')
         return False
+

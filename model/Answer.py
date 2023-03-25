@@ -1,3 +1,6 @@
+from database import checkResponse
+
+
 class Answer:
     # 建構式
     # def __init__(self):
@@ -26,3 +29,7 @@ class Answer:
         except:
             self.time=''         
         return True
+    def check(self):
+        if(checkResponse(self.id) and checkResponse(self.answer)):
+            return True
+        return False

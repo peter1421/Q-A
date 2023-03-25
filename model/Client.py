@@ -1,3 +1,6 @@
+from database import  checkResponse
+
+
 class Client:
     # 建構式
     # def __init__(self):
@@ -21,3 +24,7 @@ class Client:
         except:
             self.post=''     
         return True
+    def check(self):
+        if(checkResponse(self.ip)):
+            return True
+        return False

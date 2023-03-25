@@ -42,6 +42,14 @@ except:
     dbuser='root'
     dbpass='fil12385ki'
     
-def init():
-    global databaseHandler 
-    databaseHandler=DataBase()
+
+def checkResponse(api):
+    attacker =['#','*',')','root','admin','=','or','//', '--' , '/**/', '#', '--+', '-- -', ';%00']
+    if(len(api)>=1 and len(api)<=100):
+        for item in attacker:
+            for apiWord in api:
+                if(item in apiWord):
+                    return False
+        return True
+    return False
+

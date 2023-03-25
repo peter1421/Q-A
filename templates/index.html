@@ -25,11 +25,11 @@
 </head>
 
 <body id="reportsPage" class="bg02">
-    <div class="" id="home">
+    <div class="" id="home" >
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <nav class="navbar navbar-expand-xl navbar-light bg-light">
+                    <nav class="navbar navbar-expand-xl navbar-light bg-light" style="border-radius: 10px;">
                         <a class="navbar-brand" href="/">
                             <i class="fas fa-3x fa-tachometer-alt tm-site-icon"></i>
                             <h1 class="tm-site-title mb-0">Q&A</h1>
@@ -100,14 +100,14 @@
                         <div class="modal-body">
                             <form>
                                 <div class="form-group">
-                                    <label for="message-text" class="col-form-label">你的答案:</label>
+                                    <label for="message-text" class="col-form-label" style="border-radius: 10px;">你的答案:</label>
                                     <textarea class="form-control" id="answerSend"></textarea>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-                            <button type="button" class="btn btn-primary" id="sendAnswer">送出</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="border-radius: 10px;">關閉</button>
+                            <button type="button" class="btn btn-primary" id="sendAnswer" style="border-radius: 10px;">送出</button>
                         </div>
                         <div>
                             <div class="alert alert-warning" id="answerRemind" role="alert">
@@ -123,9 +123,9 @@
                     </div>
                 </div>
             </div>
-            <div class="row tm-mt-big">
+            <div class="row tm-mt-big" >
                 <div class="col-12 mx-auto tm-login-col">
-                    <div class="bg-white tm-block">
+                    <div class="bg-white tm-block" style="border-radius: 10px;">
                         <div class="row">
                             <div class="col-12 text-center">
                                 <i class="fas fa-3x fa-tachometer-alt tm-site-icon text-center"></i>
@@ -140,7 +140,7 @@
                                             class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">問題</label>
                                         <input name="content" type="text"
                                             class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7"
-                                            id="content" placeholder="請問你今天的內褲是甚麼顏色的?" required>
+                                            id="content" placeholder="50元以內可以吃甚麼早餐啊？" required>
                                     </div>
                                     <div class="input-group mt-3">
                                         <label for="password"
@@ -149,7 +149,7 @@
                                             placeholder="abcde@gmail.com" required>
                                     </div>
                                     <div class="input-group mt-3">
-                                        <button type="submit" class="btn btn-primary d-inline-block mx-auto"
+                                        <button type="submit" class="btn btn-primary d-inline-block mx-auto" style="border-radius: 10px;"
                                             id="addQuestion">送出</button>
                                     </div>
                                     <div class="input-group mt-3">
@@ -224,15 +224,17 @@
                     email: $("#email").val(),
                     ip:ip
                 }
+                console.log(request);
                 post('/api/addQuestion', request).then((res) => {
                     if(res['state']==200) {
                         alert(`送出成功`)
                         location.reload()
                     }else{
-                        alert(`出現錯誤`)
+                        alert(`出現錯誤:${res.message}`)
                     }
                     })
                     .catch((res) => {
+                        alert(`出現錯誤`)
                         console.error(res)
                     })
             }
@@ -248,12 +250,13 @@
                         alert(`${request.answer} 送出成功`)
                         showAnswer(request.id)
                     }else{
-                        alert(`${request.answer} 出現錯誤`)
+                        alert(`${request.answer} 出現錯誤:${res.message}`)
                     }
                     }).then((res) => {
                         
                     })
                     .catch((res) => {
+                        alert(`出現錯誤`)
                         console.error(res)
                     })
                 }
@@ -304,13 +307,13 @@
                         let newCardInfo =
                         `
                         <div class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">
-                            <div class="bg-white">
+                            <div class="bg-white" style="border-radius: 10px;">
                                 <div class="card-header">問題 ${++times}</div>
                                 <div style="display:none" id=''>${element.id}</div>
                                 <div class="card-body text-secondary">
                                     <h5 class="card-title" style=" word-wrap: break-word;word-break: break-all;overflow: hidden;">${element.content}</h5>
-                                    <p class="card-text">${element.email}</p>
-                                    <button type="button" class="btn btn-primary" id="showQuestionDialog${element.id}" data-toggle="modal" data-target="#questionDialog" data-content="${element.content}" data-id="${element.id}">回答問題</button>    
+                                    <p class="card-text"></p>
+                                    <button type="button" class="btn btn-primary" style="border-radius: 10px;" id="showQuestionDialog${element.id}" data-toggle="modal" data-target="#questionDialog" data-content="${element.content}" data-id="${element.id}">回答問題</button>    
                                     </div>
                             </div>
                         </div>
