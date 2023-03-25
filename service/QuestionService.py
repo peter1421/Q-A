@@ -9,8 +9,8 @@ def getQuestionService():
             temp=Question(id=item[0],content=item[1],email=item[2])
             api.append(temp.toApi())
         return {"question": api}
-    except:
-        return 'ERROR'
+    except Exception as e: 
+        return {"error":str(e)}
     
 def addQuestionService(question,email):
     try:

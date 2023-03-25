@@ -13,8 +13,8 @@ def getAnswerService(id):
             temp=Answer(id=id,answer=item[0],time=item[1])
             api.append(temp.toApi())
         return {"answer": api}
-    except:
-        return 'ERROR'
+    except Exception as e: 
+        return {"error":str(e)}
 
 def addAnswerService(Answer):
     try:
