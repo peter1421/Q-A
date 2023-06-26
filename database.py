@@ -1,6 +1,5 @@
 import pymysql
-import os
-import configparser
+# import configparser
 
 
 
@@ -30,8 +29,12 @@ class DataBase():
             self.db.rollback()
 
 # t = DataBase()
-config = configparser.ConfigParser()
-config.read('config.ini')
-dbhost = config.get('DataBase', 'host')
-dbuser = config.get('DataBase', 'user')
-dbpass = config.get('DataBase', 'pass')
+# config = configparser.ConfigParser()
+# config.read('config.ini')
+# dbhost = config.get('DataBase', 'host')
+# dbuser = config.get('DataBase', 'user')
+# dbpass = config.get('DataBase', 'pass')
+dbhost = 'qa-web.c6vvbl5ahndg.us-east-2.rds.amazonaws.com'
+dbuser = 'admin'
+dbpass = 'fil12385ki'
+
